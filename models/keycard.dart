@@ -1,7 +1,7 @@
 class Keycard {
   final String keycardId;
-  late String? guest;
+  late String? guestName;
   late String? roomId;
 
-  Keycard({required this.keycardId, this.guest, this.roomId});
+  Keycard({required this.keycardId, this.guestName, this.roomId});
 }

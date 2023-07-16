@@ -9,7 +9,7 @@ class Command {
   Command({required this.name, required this.params});
 
   static Future<List<Command>> getCommandsFormFileName(String filename) async {
-    String input = await File('./input.txt').readAsString(encoding: utf8);
+    String input = await File(filename).readAsString(encoding: utf8);
 
     List<Command> commands = input.split("\n").map((line) {
       List<String> command = line.split(' ');

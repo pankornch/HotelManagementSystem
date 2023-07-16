@@ -1,4 +1,6 @@
+import 'models/room.dart';
 import 'services/hotel_management_service.dart';
+import 'utils/assert_output.dart';
 import 'utils/command.dart';
 
 void main() async {
@@ -7,18 +9,58 @@ void main() async {
 
   List<Command> commands = await Command.getCommandsFormFileName(filename);
 
-  commands.forEach((command) {
+  for (int i = 0; i < commands.length; i++) {
+    Command command = commands[i];
+    AssertOutput assertOutput = new AssertOutput(filename: 'output.txt');
+
     switch (command.name) {
       case "create_hotel":
         int floor = int.parse(command.params[0]);
         int roomPerFloor = int.parse(command.params[1]);
-        var rooms = service.createHotel(floor, roomPerFloor);
+        service.createHotel(floor, roomPerFloor);
 
-        print(
-            "Hotel created with $floor floor(s), $roomPerFloor room(s) per floor.");
-        return;
+        String result =
+            "Hotel created with $floor floor(s), $roomPerFloor room(s) per floor.";
+
+        print(result);
+
+        assertOutput.assertByIndex(result, i);
+        break;
+
+      case "book":
+        String roomId = command.params[0];
+        String guestName = command.params[1];
+        int guestAge = int.parse(command.params[2]);
+
+        try {
+          Room _room = service.bookByUser(roomId, guestName, guestAge);
+          String result =
+              "Room $roomId is booked by $guestName with keycard number ${_room.keycardId}.";
+          print(result);
+          assertOutput.assertByIndex(result, i);
+        } catch (e) {
+          print(e);
+          assertOutput.assertByIndex(e.toString(), i);
+        }
+
+        break;
+
+      case "checkout":
+        String keycardId = command.params[0];
+        String guestName = command.params[1];
+
+        try {
+          Room _room = service.checkoutByUser(keycardId, guestName);
+          String result = "Room ${_room.roomId} is checkout.";
+          assertOutput.assertByIndex(result, i);
+        } catch (e) {
+          print(e);
+          assertOutput.assertByIndex(e.toString(), i);
+        }
+        break;
+
       default:
-        return;
+        break;
     }
-  });
+  }
 }
