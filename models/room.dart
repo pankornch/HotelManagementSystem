@@ -4,6 +4,7 @@ class Room {
   late String? guestName;
   late int? guestAge;
   late String? keycardId;
+  late DateTime? bookedAt;
 
   Room({
     required this.roomId,
@@ -11,5 +12,6 @@ class Room {
     this.guestName,
     this.keycardId,
     this.guestAge,
+    this.bookedAt,
   });
 }

@@ -1,3 +1,4 @@
+import 'models/guest.dart';
 import 'models/room.dart';
 import 'services/hotel_management_service.dart';
 import 'utils/assert_output.dart';
@@ -63,7 +64,14 @@ void main() async {
       case "list_available_rooms":
         List<Room> _rooms = service.listAvailableRooms();
 
-        String result = _rooms.map((room) => room.roomId).join(",");
+        String result = _rooms.map((room) => room.roomId).join(", ");
+        print(result);
+        assertOutput.assertByIndex(result, i);
+        break;
+
+      case "list_guest":
+        List<Guest> guests = service.listGuests();
+        String result = guests.map((guest) => guest.guestName).join(", ");
         print(result);
         assertOutput.assertByIndex(result, i);
         break;

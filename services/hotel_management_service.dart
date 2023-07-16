@@ -1,3 +1,4 @@
+import '../models/guest.dart';
 import '../models/keycard.dart';
 import '../models/room.dart';
 
@@ -44,6 +45,7 @@ class HotelManagementService {
     _room.guestName = guestName;
     _room.guestAge = guestAge;
     _room.keycardId = _keycard.keycardId;
+    _room.bookedAt = new DateTime.now();
 
     this.keycards[_keyCardIndex] = _keycard;
 
@@ -63,8 +65,9 @@ class HotelManagementService {
       throw "Only ${_keycard.guestName} can checkout with keycard number $keycardId.";
     }
 
-    int _roomIndex = this.rooms.indexWhere((room) => room.keycardId == keycardId);
-    
+    int _roomIndex =
+        this.rooms.indexWhere((room) => room.keycardId == keycardId);
+
     Room _room = [...this.rooms][_roomIndex];
 
     this.keycards[_keycardIndex].roomId = null;
@@ -77,7 +80,18 @@ class HotelManagementService {
     return _room;
   }
 
-  listGuests() {}
+  List<Guest> listGuests() {
+    List<Room> _bookedRooms =
+        this.rooms.where((room) => room.guestName != null).toList();
+
+    _bookedRooms.sort((a, b) => a.bookedAt!.compareTo(b.bookedAt!));
+
+    return _bookedRooms
+        .map((room) =>
+            new Guest(guestName: room.guestName!, guestAge: room.guestAge!))
+        .toList();
+  }
+
   getGuestInRoom() {}
   listGuestsByAge() {}
   listGuestsByFloor() {}
