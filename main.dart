@@ -12,7 +12,7 @@ void main() async {
   for (int i = 0; i < commands.length; i++) {
     Command command = commands[i];
     AssertOutput assertOutput = new AssertOutput(filename: 'output.txt');
-
+    print("${i + 1} ${command.name}");
     switch (command.name) {
       case "create_hotel":
         int floor = int.parse(command.params[0]);
@@ -52,11 +52,20 @@ void main() async {
         try {
           Room _room = service.checkoutByUser(keycardId, guestName);
           String result = "Room ${_room.roomId} is checkout.";
+          print(result);
           assertOutput.assertByIndex(result, i);
         } catch (e) {
           print(e);
           assertOutput.assertByIndex(e.toString(), i);
         }
+        break;
+
+      case "list_available_rooms":
+        List<Room> _rooms = service.listAvailableRooms();
+
+        String result = _rooms.map((room) => room.roomId).join(",");
+        print(result);
+        assertOutput.assertByIndex(result, i);
         break;
 
       default:

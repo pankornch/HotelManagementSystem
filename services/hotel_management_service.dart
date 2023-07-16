@@ -50,7 +50,9 @@ class HotelManagementService {
     return _room;
   }
 
-  listAvailableRooms() {}
+  List<Room> listAvailableRooms() {
+    return this.rooms.where((room) => room.keycardId == null).toList();
+  }
 
   Room checkoutByUser(String keycardId, String guestName) {
     int _keycardIndex =
