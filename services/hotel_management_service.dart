@@ -92,7 +92,10 @@ class HotelManagementService {
         .toList();
   }
 
-  getGuestInRoom() {}
+  Guest getGuestInRoom(String roomId) {
+    Room _room = this.rooms.firstWhere((room) => room.roomId == roomId);
+    return new Guest(guestName: _room.guestName!, guestAge: _room.guestAge!);
+  }
   listGuestsByAge() {}
   listGuestsByFloor() {}
   bookByFloor() {}

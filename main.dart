@@ -76,6 +76,14 @@ void main() async {
         assertOutput.assertByIndex(result, i);
         break;
 
+      case "get_guest_in_room":
+        String roomId = command.params[0];
+        Guest guest = service.getGuestInRoom(roomId);
+        String result = guest.guestName;
+        print(result);
+        assertOutput.assertByIndex(result, i);
+        break;
+
       default:
         break;
     }
