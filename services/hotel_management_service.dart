@@ -76,6 +76,7 @@ class HotelManagementService {
     this.rooms[_roomIndex].keycardId = null;
     this.rooms[_roomIndex].guestName = null;
     this.rooms[_roomIndex].guestAge = null;
+    this.rooms[_roomIndex].bookedAt = null;
 
     return _room;
   }
@@ -116,7 +117,15 @@ class HotelManagementService {
     }
   }
 
-  listGuestsByFloor() {}
+  List<Guest> listGuestsByFloor(int floor) {
+    return this
+        .rooms
+        .where((room) => room.floor == floor && room.bookedAt != null)
+        .map((room) =>
+            new Guest(guestName: room.guestName!, guestAge: room.guestAge!))
+        .toList();
+  }
+
   bookByFloor() {}
   checkoutGuestByFloor() {}
 
