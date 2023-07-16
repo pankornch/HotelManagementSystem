@@ -84,6 +84,15 @@ void main() async {
         assertOutput.assertByIndex(result, i);
         break;
 
+      case "list_guest_by_age":
+        String operation = command.params[0];
+        int age = int.parse(command.params[1]);
+        List<Guest> guests =service.listGuestsByAge(operation, age);
+        String result = guests.map((guest) => guest.guestName).join(", ");
+        print(result);
+        assertOutput.assertByIndex(result, i);
+        break;
+
       default:
         break;
     }

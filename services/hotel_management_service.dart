@@ -96,7 +96,26 @@ class HotelManagementService {
     Room _room = this.rooms.firstWhere((room) => room.roomId == roomId);
     return new Guest(guestName: _room.guestName!, guestAge: _room.guestAge!);
   }
-  listGuestsByAge() {}
+
+  List<Guest> listGuestsByAge(String operation, int age) {
+    List<Guest> _guests = this.listGuests();
+
+    switch (operation) {
+      case "<":
+        return _guests.where((guest) => guest.guestAge < age).toList();
+      case "<=":
+        return _guests.where((guest) => guest.guestAge <= age).toList();
+      case ">":
+        return _guests.where((guest) => guest.guestAge > age).toList();
+      case ">=":
+        return _guests.where((guest) => guest.guestAge >= age).toList();
+      case "==":
+        return _guests.where((guest) => guest.guestAge == age).toList();
+      default:
+        return _guests;
+    }
+  }
+
   listGuestsByFloor() {}
   bookByFloor() {}
   checkoutGuestByFloor() {}
