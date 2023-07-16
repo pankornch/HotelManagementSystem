@@ -3,28 +3,27 @@ import 'models/room.dart';
 import 'services/hotel_management_service.dart';
 import 'utils/assert_output.dart';
 import 'utils/command.dart';
+import 'utils/message.dart';
 
 void main() async {
-  String filename = "input.txt";
   HotelManagementService service = new HotelManagementService();
 
-  List<Command> commands = await Command.getCommandsFormFileName(filename);
+  List<Command> commands = await Command.getCommandsFormFileName("input.txt");
 
   for (int i = 0; i < commands.length; i++) {
     Command command = commands[i];
     AssertOutput assertOutput = new AssertOutput(filename: 'output.txt');
-    print("${i + 1} ${command.name}");
+    // print("${i + 1} ${command.name}");
     switch (command.name) {
       case "create_hotel":
         int floor = int.parse(command.params[0]);
         int roomPerFloor = int.parse(command.params[1]);
+
         service.createHotel(floor, roomPerFloor);
 
-        String result =
-            "Hotel created with $floor floor(s), $roomPerFloor room(s) per floor.";
+        String result = Message.createHotel(floor, roomPerFloor);
 
         print(result);
-
         assertOutput.assertByIndex(result, i);
         break;
 
@@ -34,9 +33,9 @@ void main() async {
         int guestAge = int.parse(command.params[2]);
 
         try {
-          Room _room = service.bookByUser(roomId, guestName, guestAge);
-          String result =
-              "Room $roomId is booked by $guestName with keycard number ${_room.keycardId}.";
+          Room room = service.bookByUser(roomId, guestName, guestAge);
+          String result = Message.book(room);
+
           print(result);
           assertOutput.assertByIndex(result, i);
         } catch (e) {
@@ -51,8 +50,8 @@ void main() async {
         String guestName = command.params[1];
 
         try {
-          Room _room = service.checkoutByUser(keycardId, guestName);
-          String result = "Room ${_room.roomId} is checkout.";
+          Room room = service.checkoutByUser(keycardId, guestName);
+          String result = Message.checkout(room);
 
           print(result);
           assertOutput.assertByIndex(result, i);
@@ -63,9 +62,9 @@ void main() async {
         break;
 
       case "list_available_rooms":
-        List<Room> _rooms = service.listAvailableRooms();
+        List<Room> rooms = service.listAvailableRooms();
 
-        String result = _rooms.map((room) => room.roomId).join(", ");
+        String result = Message.listAvailableRooms(rooms);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -74,7 +73,7 @@ void main() async {
       case "list_guest":
         List<Guest> guests = service.listGuests();
 
-        String result = guests.map((guest) => guest.guestName).join(", ");
+        String result = Message.listGuest(guests);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -83,9 +82,9 @@ void main() async {
       case "get_guest_in_room":
         String roomId = command.params[0];
 
-        Guest guest = service.getGuestInRoom(roomId);
+        Guest? guest = service.getGuestInRoom(roomId);
 
-        String result = guest.guestName;
+        String result = Message.getGuestInRoom(guest);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -97,7 +96,7 @@ void main() async {
 
         List<Guest> guests = service.listGuestsByAge(operation, age);
 
-        String result = guests.map((guest) => guest.guestName).join(", ");
+        String result = Message.listGuestByAge(guests);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -109,7 +108,7 @@ void main() async {
 
         List<Guest> guests = service.listGuestsByFloor(floor);
 
-        String result = guests.map((guest) => guest.guestName).join(", ");
+        String result = Message.listGuestByFloor(guests);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -120,8 +119,7 @@ void main() async {
 
         List<Room> rooms = service.checkoutGuestByFloor(floor);
 
-        String result =
-            "Room ${rooms.map((room) => room.roomId).join(", ")} are checkout.";
+        String result = Message.checkoutGuestByFloor(rooms);
 
         print(result);
         assertOutput.assertByIndex(result, i);
@@ -134,8 +132,7 @@ void main() async {
 
         try {
           List<Room> rooms = service.bookByFloor(floor, guestName, guestAge);
-          String result =
-              "Room ${rooms.map((room) => room.roomId).join(", ")} are booked with keycard number ${rooms.map((room) => room.keycardId).join(", ")}";
+          String result = Message.bookByFloor(rooms);
 
           print(result);
           assertOutput.assertByIndex(result, i);
