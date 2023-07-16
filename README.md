@@ -18,7 +18,7 @@ Self Check-in & Check-out Function
 5. ดูชื่อแขกในห้องพักที่ระบุได้
 
 ```bash
-$ node main.js
+$ dart run main.dart     
 Hotel created with 2 floor(s), 3 room(s) per floor.
 Room 203 is booked by Thor with keycard number 1.
 Room 101 is booked by PeterParker with keycard number 2.
@@ -29,13 +29,17 @@ Cannot book room 203 for TonyStark, The room is currently booked by Thor.
 103
 Room 201 is checkout.
 Room 103 is booked by TonyStark with keycard number 4.
-Hotel is fully booked.
+Cannot book room 101 for Thanos, The room is currently booked by PeterParker.
 Only Thor can checkout with keycard number 1.
 Room 202 is checkout.
 Room 103 is checkout.
 Thor, PeterParker, StephenStrange
 Thor
 PeterParker
+Thor
+Room 101, 102 are checkout.
+Room 101, 102, 103 are booked with keycard number 2, 3, 4
+Cannot book floor 2 for TonyStark.
 ```
 
 ## วิธีการทำโจทย์
