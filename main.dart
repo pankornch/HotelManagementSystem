@@ -53,6 +53,7 @@ void main() async {
         try {
           Room _room = service.checkoutByUser(keycardId, guestName);
           String result = "Room ${_room.roomId} is checkout.";
+
           print(result);
           assertOutput.assertByIndex(result, i);
         } catch (e) {
@@ -65,21 +66,27 @@ void main() async {
         List<Room> _rooms = service.listAvailableRooms();
 
         String result = _rooms.map((room) => room.roomId).join(", ");
+
         print(result);
         assertOutput.assertByIndex(result, i);
         break;
 
       case "list_guest":
         List<Guest> guests = service.listGuests();
+
         String result = guests.map((guest) => guest.guestName).join(", ");
+
         print(result);
         assertOutput.assertByIndex(result, i);
         break;
 
       case "get_guest_in_room":
         String roomId = command.params[0];
+
         Guest guest = service.getGuestInRoom(roomId);
+
         String result = guest.guestName;
+
         print(result);
         assertOutput.assertByIndex(result, i);
         break;
@@ -87,17 +94,56 @@ void main() async {
       case "list_guest_by_age":
         String operation = command.params[0];
         int age = int.parse(command.params[1]);
+
         List<Guest> guests = service.listGuestsByAge(operation, age);
+
         String result = guests.map((guest) => guest.guestName).join(", ");
+
+        print(result);
+        assertOutput.assertByIndex(result, i);
+
+        break;
+
+      case "list_guest_by_floor":
+        int floor = int.parse(command.params[0]);
+
+        List<Guest> guests = service.listGuestsByFloor(floor);
+
+        String result = guests.map((guest) => guest.guestName).join(", ");
+
         print(result);
         assertOutput.assertByIndex(result, i);
         break;
-      case "list_guest_by_floor":
+
+      case "checkout_guest_by_floor":
         int floor = int.parse(command.params[0]);
-        List<Guest> guests = service.listGuestsByFloor(floor);
-        String result = guests.map((guest) => guest.guestName).join(", ");
+
+        List<Room> rooms = service.checkoutGuestByFloor(floor);
+
+        String result =
+            "Room ${rooms.map((room) => room.roomId).join(", ")} are checkout.";
+
         print(result);
         assertOutput.assertByIndex(result, i);
+        break;
+
+      case "book_by_floor":
+        int floor = int.parse(command.params[0]);
+        String guestName = command.params[1];
+        int guestAge = int.parse(command.params[2]);
+
+        try {
+          List<Room> rooms = service.bookByFloor(floor, guestName, guestAge);
+          String result =
+              "Room ${rooms.map((room) => room.roomId).join(", ")} are booked with keycard number ${rooms.map((room) => room.keycardId).join(", ")}";
+
+          print(result);
+          assertOutput.assertByIndex(result, i);
+        } catch (e) {
+          print(e);
+          assertOutput.assertByIndex(e.toString(), i);
+        }
+
         break;
       default:
         break;

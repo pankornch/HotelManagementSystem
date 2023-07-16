@@ -70,13 +70,8 @@ class HotelManagementService {
 
     Room _room = [...this.rooms][_roomIndex];
 
-    this.keycards[_keycardIndex].roomId = null;
-    this.keycards[_keycardIndex].guestName = null;
-
-    this.rooms[_roomIndex].keycardId = null;
-    this.rooms[_roomIndex].guestName = null;
-    this.rooms[_roomIndex].guestAge = null;
-    this.rooms[_roomIndex].bookedAt = null;
+    clearKeycard(keycardId);
+    clearRoom(_room.roomId);
 
     return _room;
   }
@@ -126,8 +121,34 @@ class HotelManagementService {
         .toList();
   }
 
-  bookByFloor() {}
-  checkoutGuestByFloor() {}
+  checkoutGuestByFloor(int floor) {
+    List<Room> _rooms = this
+        .rooms
+        .where((room) => room.floor == floor && room.bookedAt != null)
+        .toList();
+    _rooms.forEach((room) {
+      clearKeycard(room.keycardId!);
+      clearRoom(room.roomId);
+    });
+
+    return _rooms;
+  }
+
+  bookByFloor(int floor, String guestName, int guestAge) {
+    bool _hasFloorAvalable = this.listGuestsByFloor(floor).length == 0;
+
+    if (!_hasFloorAvalable) {
+      throw "Cannot book floor $floor for $guestName.";
+    }
+    List<Room> _rooms =
+        this.rooms.where((room) => room.floor == floor).toList();
+
+    List<Room> _bookedRooms = _rooms
+        .map((room) => this.bookByUser(room.roomId, guestName, guestAge))
+        .toList();
+
+    return _bookedRooms;
+  }
 
   static String createRoomId(int floor, int room) {
     return "$floor${room.toString().padLeft(2, "0")}";
@@ -135,5 +156,22 @@ class HotelManagementService {
 
   int getAvailableKeycardIndex() {
     return this.keycards.indexWhere((keycard) => keycard.roomId == null);
+  }
+
+  clearRoom(String roomId) {
+    int _roomIndex = this.rooms.indexWhere((room) => room.roomId == roomId);
+
+    this.rooms[_roomIndex].keycardId = null;
+    this.rooms[_roomIndex].guestName = null;
+    this.rooms[_roomIndex].guestAge = null;
+    this.rooms[_roomIndex].bookedAt = null;
+  }
+
+  clearKeycard(String keycardId) {
+    int _keycardIndex =
+        this.keycards.indexWhere((keycard) => keycard.keycardId == keycardId);
+
+    this.keycards[_keycardIndex].roomId = null;
+    this.keycards[_keycardIndex].guestName = null;
   }
 }
